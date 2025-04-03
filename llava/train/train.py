@@ -377,9 +377,9 @@ def _add_speaker_and_signal(header, source, get_conversation=True):
 
 def preprocess_multimodal(sources: Sequence[str], data_args: DataArguments) -> Dict:
     is_multimodal = data_args.is_multimodal
+    import sys
     if not is_multimodal:
         return sources
-
     for source in sources:
         for sentence in source:
             # TODO maybe this should be changed for interleaved data?
@@ -399,7 +399,6 @@ def preprocess_multimodal(sources: Sequence[str], data_args: DataArguments) -> D
 
             # For videoInstruct-100k noisy_data. TODO: Ask Yuanhan to clean the data instead of leaving the noise code here.
             sentence["value"] = sentence["value"].replace("QA_GT_caption_based_noisy", "")
-
     return sources
 
 
@@ -560,7 +559,6 @@ def preprocess_gemma(sources: List[List[Dict[str, str]]], tokenizer: transformer
 def preprocess_qwen(sources, tokenizer: transformers.PreTrainedTokenizer, has_image: bool = False, max_len=2048, system_message: str = "You are a helpful assistant.") -> Dict:
     # roles = {"human": "<|im_start|>user", "gpt": "<|im_start|>assistant"}
     roles = {"human": "user", "gpt": "assistant"}
-
     # Add image tokens to tokenizer as a special tokens
     # Use a deepcopy of tokenizer so that we don't modify on the tokenizer
     tokenizer = copy.deepcopy(tokenizer)
@@ -593,6 +591,7 @@ def preprocess_qwen(sources, tokenizer: transformers.PreTrainedTokenizer, has_im
         # New version, use apply chat template
         # Build system message for each sentence
         input_id += tokenizer.apply_chat_template([{"role" : "system", "content" : system_message}])
+
         target += [IGNORE_INDEX] * len(input_id)
 
         for conv in source:
@@ -613,8 +612,6 @@ def preprocess_qwen(sources, tokenizer: transformers.PreTrainedTokenizer, has_im
                 target += [IGNORE_INDEX] * len(encode_id)
             else:
                 target += encode_id
-        
-
                     
         assert len(input_id) == len(target), f"{len(input_id)} != {len(target)}"
         for idx, encode_id in enumerate(input_id):
@@ -952,7 +949,9 @@ def preprocess(sources: Sequence[str], tokenizer: transformers.PreTrainedTokeniz
     return dict(input_ids=input_ids, labels=targets)
 
 
-class LazySupervisedDataset(Dataset):
+
+##########需要修改这个函数，适配视频-图像格式的数据
+class LazySupervisedDataset(Dataset):     
     def __init__(self, data_path: str, tokenizer: transformers.PreTrainedTokenizer, data_args: DataArguments):
         super(LazySupervisedDataset, self).__init__()
         self.tokenizer = tokenizer
@@ -1132,12 +1131,15 @@ class LazySupervisedDataset(Dataset):
             raise e
 
     def _get_item(self, i) -> Dict[str, torch.Tensor]:
+        import sys
         sources = self.list_data_dict[i]
         if isinstance(i, int):
             sources = [sources]
         assert len(sources) == 1, "Don't know why it is wrapped to a list"  # FIXME
+        # import pdb
+        # pdb.set_trace()
 
-        if "image" in sources[0]:
+        if "image" in sources[0] and "video" not in sources[0]:
             image_file = self.list_data_dict[i]["image"]
             if type(image_file) is list:
                 image = [self.process_image(f) for f in image_file]
@@ -1149,12 +1151,17 @@ class LazySupervisedDataset(Dataset):
             else:
                 image = [self.process_image(image_file)]
             sources = preprocess_multimodal(copy.deepcopy([e["conversations"] for e in sources]), self.data_args)
-
-        elif "video" in sources[0]:
+        elif "video" in sources[0] and "image" not in sources[0]:
             video_file = self.list_data_dict[i]["video"]
+            # add data_source 
+            data_source = self.list_data_dict[i]["data_source"]
+
             video_folder = self.data_args.video_folder
-            video_file = os.path.join(video_folder, video_file)
+            video_file = os.path.join(video_folder, data_source, video_file)
             suffix = video_file.split(".")[-1]
+
+            # import pdb; pdb.set_trace()
+
             if not os.path.exists(video_file):
                 print("File {} not exist!".format(video_file))
 
@@ -1200,7 +1207,66 @@ class LazySupervisedDataset(Dataset):
                     sources[0]["conversations"][0]["value"] = f'{DEFAULT_IMAGE_TOKEN}\n{time_instruciton}\n{sources[0]["conversations"][0]["value"].replace(DEFAULT_IMAGE_TOKEN, "")}'
                 image = [(image, video[0].size, "video")]
                 sources = preprocess_multimodal(copy.deepcopy([e["conversations"] for e in sources]), self.data_args)
-                # print(sources)
+            except Exception as e:
+                print(f"Error: {e}")
+                print(f"Failed to read video file: {video_file}")
+                return self._get_item(i + 1)
+        elif "video" in sources[0] and "image" in sources[0]:
+            #####读取图像####
+            image_file = self.list_data_dict[i]["image"]
+            image = self.process_image(image_file)
+
+            #####读取视频####
+            video_file = self.list_data_dict[i]["video"]
+            # add data_source 
+            data_source = self.list_data_dict[i]["data_source"]
+            video_folder = self.data_args.video_folder
+            video_file = os.path.join(video_folder, data_source, video_file)
+            suffix = video_file.split(".")[-1]
+            if not os.path.exists(video_file):
+                print("File {} not exist!".format(video_file))
+            try:
+                if "shareVideoGPTV" in video_file:
+                    frame_files = [os.path.join(video_file, f) for f in os.listdir(video_file) if os.path.isfile(os.path.join(video_file, f))]
+                    frame_files.sort()  # Ensure the frames are sorted if they are named sequentially
+
+                    # TODO: Hard CODE: Determine the indices for uniformly sampling 10 frames
+                    if self.data_args.force_sample:
+                        num_frames_to_sample = self.data_args.frames_upbound
+                    else:
+                        num_frames_to_sample = 10
+
+                    avg_fps = 2
+                    
+                    total_frames = len(frame_files)
+                    sampled_indices = np.linspace(0, total_frames - 1, num_frames_to_sample, dtype=int)
+
+
+                    frame_time = [i/2 for i in sampled_indices]
+                    frame_time = ",".join([f"{i:.2f}s" for i in frame_time])
+
+                    video_time = total_frames / avg_fps
+
+                    # Read and store the sampled frames
+                    video = []
+                    for idx in sampled_indices:
+                        frame_path = frame_files[idx]
+                        try:
+                            with Image.open(frame_path) as img:
+                                frame = img.convert("RGB")
+                                video.append(frame)
+                        except IOError:
+                            print(f"Failed to read frame at path: {frame_path}")
+                else:
+                    video, video_time, frame_time, num_frames_to_sample = process_video_with_decord(video_file, self.data_args)
+
+                processor = self.data_args.image_processor
+                video_tensor = processor.preprocess(video, return_tensors="pt")["pixel_values"]
+                if self.data_args.add_time_instruction:
+                    time_instruciton = f"The video lasts for {video_time:.2f} seconds, and {num_frames_to_sample} frames are uniformly sampled from it. These frames are located at {frame_time}.Please answer the following questions related to this video."
+                    sources[0]["conversations"][0]["value"] = f'{DEFAULT_IMAGE_TOKEN}\n{time_instruciton}\n{DEFAULT_IMAGE_TOKEN}{sources[0]["conversations"][0]["value"].replace(DEFAULT_IMAGE_TOKEN, "")}'
+                image = [(video_tensor, video[0].size, "video"), image]
+                sources = preprocess_multimodal(copy.deepcopy([e["conversations"] for e in sources]), self.data_args)
             except Exception as e:
                 print(f"Error: {e}")
                 print(f"Failed to read video file: {video_file}")
@@ -1220,9 +1286,11 @@ class LazySupervisedDataset(Dataset):
             data_dict = dict(input_ids=data_dict["input_ids"][0], labels=data_dict["labels"][0])
 
         # image exist in the data
-        if "image" in self.list_data_dict[i]:
+        if "image" in self.list_data_dict[i] and "video" not in self.list_data_dict[i]:
             data_dict["image"] = image
-        elif "video" in self.list_data_dict[i]:
+        elif "video" in self.list_data_dict[i] and "image" not in self.list_data_dict[i]:
+            data_dict["image"] = image
+        elif "image" in self.list_data_dict[i] and "video" in self.list_data_dict[i]:
             data_dict["image"] = image
         elif self.data_args.is_multimodal:
             # image does not exist in the data, but the model is multimodal
@@ -1233,9 +1301,7 @@ class LazySupervisedDataset(Dataset):
         # prompt exist in the data
         if prompt is not None:
             data_dict["prompt"] = prompt
-
         data_dict["id"] = self.list_data_dict[i].get("id", i)
-
         return data_dict
 
 
@@ -1255,31 +1321,24 @@ class DataCollatorForSupervisedDataset(object):
 
     def __call__(self, instances: Sequence[Dict]) -> Dict[str, torch.Tensor]:
         input_ids, labels = tuple([instance[key] for instance in instances] for key in ("input_ids", "labels"))
-        # input_ids, labels, ids = tuple([instance[key] for instance in instances] for key in ("input_ids", "labels", "id"))
         input_ids = [_input_ids[: self.tokenizer.model_max_length] for _input_ids in input_ids]
         labels = [_labels[: self.tokenizer.model_max_length] for _labels in labels]
         if self.tokenizer.pad_token_id is None:
-            # self.tokenizer.pad_token_id = self.tokenizer.eos_token_id  # FIXME: this could only be triggered for llama3 model.
-            self.tokenizer.pad_token_id = 0 # This gets the best result. Don't know why.
+            self.tokenizer.pad_token_id = 0  # 默认设置
         input_ids = self.pad_sequence(input_ids, batch_first=True, padding_value=self.tokenizer.pad_token_id)
         labels = self.pad_sequence(labels, batch_first=True, padding_value=IGNORE_INDEX)
-        batch = dict(input_ids=input_ids, labels=labels.long() if labels.dtype == torch.int32 else labels, attention_mask=input_ids.ne(self.tokenizer.pad_token_id))
-        # batch = dict(input_ids=input_ids, labels=labels, attention_mask=input_ids.ne(self.tokenizer.pad_token_id), ids=ids)
+        batch = dict(
+            input_ids=input_ids,
+            labels=labels.long() if labels.dtype == torch.int32 else labels,
+            attention_mask=input_ids.ne(self.tokenizer.pad_token_id)
+        )
 
         if "image" in instances[0]:
             images = [instance["image"] for instance in instances]
-
             batch["image_sizes"] = [im[1] for im_list in images for im in im_list]
             batch["modalities"] = [im[2] for im_list in images for im in im_list]
             images = [im[0] for im_list in images for im in im_list]
-
-            # if all(x is not None and x.shape == images[0].shape for x in images):
-                # Image: (N, P, C, H, W)
-                # Video: (N, F, C, H, W)
-            #     batch["images"] = torch.stack(images)
-            # else:
             batch["images"] = images
-
         if "prompt" in instances[0]:
             batch["prompts"] = [instance["prompt"] for instance in instances]
 

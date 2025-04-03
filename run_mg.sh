@@ -1,0 +1,1 @@
+bash scripts/video/train/SO400M_Qwen2_7B_ov_to_video_am9_mg.sh 

@@ -10,12 +10,12 @@ DATA_YAML="/map-vepfs/dehua/code/LLaVA-NeXT/scripts/video/train/exp_test.yaml" #
 # alias python=python3
 ############### Show Envs ####################
 nvidia-smi
-
+source /map-vepfs/dehua/anaconda3/bin/activate llava-next
 ################ Arnold Jobs ################
 
 LLM_VERSION="Qwen/Qwen2-7B-Instruct"
 LLM_VERSION_CLEAN="${LLM_VERSION//\//_}"
-VISION_MODEL_VERSION="/map-vepfs/huggingface/models/google/siglip-so400m-patch14-384"
+VISION_MODEL_VERSION="google/siglip-so400m-patch14-384"
 VISION_MODEL_VERSION_CLEAN="${VISION_MODEL_VERSION//\//_}"
 #
 
@@ -26,12 +26,49 @@ echo "BASE_RUN_NAME: ${BASE_RUN_NAME}"
 PROMPT_VERSION="qwen_1_5"
 MID_RUN_NAME="llavanext-${VISION_MODEL_VERSION_CLEAN}-${LLM_VERSION_CLEAN}-ov_to_video_am9"
 PREV_STAGE_CHECKPOINT="/map-vepfs/huggingface/models/lmms-lab/llava-onevision-qwen2-7b-si"
+PREV_STAGE_CHECKPOINT="/map-vepfs/huggingface/models/llava-onevision-qwen2-0.5b-si"
 echo "PREV_STAGE_CHECKPOINT: ${PREV_STAGE_CHECKPOINT}"
 echo "MID_RUN_NAME: ${MID_RUN_NAME}"
 
+export http_proxy=http://100.64.117.161:3128
+export https_proxy=http://100.64.117.161:3128
+# ARNOLD_WORKER_NUM=${1:-1}
+# ARNOLD_ID=${2:-0}
+# ARNOLD_WORKER_GPU=${3:-8}
+# METIS_WORKER_0_HOST=${METIS_WORKER_0_HOST:-127.0.0.1}
 
-# ACCELERATE_CPU_AFFINITY=1 torchrun --nproc_per_node="${ARNOLD_WORKER_GPU}" --nnodes="${ARNOLD_WORKER_NUM}" --node_rank="${ARNOLD_ID}" --master_addr="${METIS_WORKER_0_HOST}" --master_port="${port_in_cmd}" \
-/map-vepfs/dehua/anaconda3/envs/llava-next/bin/deepspeed --master_port 30000 \
+
+export GPUS_PER_NODE=${MLP_WORKER_GPU:-${KUBERNETES_CONTAINER_RESOURCE_GPU:-8}}
+export NNODES=${MLP_WORKER_NUM:-${WORLD_SIZE:-1}}
+export NODE_RANK=${MLP_WORKER_RACK_RANK_INDEX:-${MLP_ROLE_INDEX:-${RANK:-0}}}
+export MASTER_ADDR=${MLP_WORKER_0_HOST:-${MASTER_ADDR:-127.0.0.1}}
+export MASTER_PORT=${MLP_WORKER_0_PORT:-${MASTER_PORT:-1234}}
+# # 为额外三个变量设置默认值
+# if command -v ip > /dev/null 2>&1; then
+#     METIS_WORKER_0_HOST=$(ip route get 1.1.1.1 | awk '{print $7; exit}')
+# elif command -v hostname > /dev/null 2>&1; then
+#     METIS_WORKER_0_HOST=$(hostname -I | awk '{print $1}')
+# elif command -v ifconfig > /dev/null 2>&1; then
+#     METIS_WORKER_0_HOST=$(ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1' | head -n 1)
+# else
+#     echo "没有可用的命令来获取IP，请手动设置METIS_WORKER_0_HOST"
+#     exit 1
+# fi
+
+echo "total workers: ${NNODES}"
+echo "cur worker id: ${NODE_RANK}"
+echo "gpus per worker: ${GPUS_PER_NODE}"
+echo "master ip: ${MASTER_ADDR}"
+echo "master port: ${MASTER_PORT}"
+
+export HF_HOME=/map-vepfs/yizhi/RAG-V/jiawei_results/cache
+
+# ACCELERATE_CPU_AFFINITY=1 
+torchrun --nproc_per_node $GPUS_PER_NODE \
+ --master_addr $MASTER_ADDR \
+ --node_rank $NODE_RANK \
+ --master_port $MASTER_PORT \
+ --nnodes $NNODES \
     llava/train/train_mem.py \
     --deepspeed scripts/zero3.json \
     --model_name_or_path $PREV_STAGE_CHECKPOINT \

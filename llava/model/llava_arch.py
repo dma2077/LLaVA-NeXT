@@ -253,35 +253,32 @@ class LlavaMetaForCausalLM(ABC):
         # rank_print(modalities)
         if vision_tower is None or images is None or input_ids.shape[1] == 1:
             return input_ids, position_ids, attention_mask, past_key_values, None, labels
-
+        # image_sizes_new = [image_size["image_sizes"] for image_size in image_sizes]
+        # nframes = [image_size["nframes"] for image_size in image_sizes]
+        # image_sizes = image_sizes_new
+        # if modalities[0] == "video_image":
+        #     images = images[:,:nframes]
         if isinstance(modalities, str):
             modalities = [modalities]
-
-        # import pdb; pdb.set_trace()
         if type(images) is list or images.ndim == 5:
             if type(images) is list:
                 images = [x.unsqueeze(0) if x.ndim == 3 else x for x in images]
-
             video_idx_in_batch = []
             for _ in range(len(modalities)):
                 if modalities[_] == "video":
                     video_idx_in_batch.append(_)
-
             images_list = []
             for image in images:
                 if image.ndim == 4:
                     images_list.append(image)
                 else:
                     images_list.append(image.unsqueeze(0))
-
             concat_images = torch.cat([image for image in images_list], dim=0)
             split_sizes = [image.shape[0] for image in images_list]
             encoded_image_features = self.encode_images(concat_images)
-            # image_features,all_faster_video_features = self.encode_multimodals(concat_images, video_idx_in_batch, split_sizes)
-
-            # This is a list, each element is [num_images, patch * patch, dim]
-            # rank_print(f"Concat images : {concat_images.shape}")
             encoded_image_features = torch.split(encoded_image_features, split_sizes)
+            # for i, tensor in enumerate(encoded_image_features):
+            #     print(f"Part {i + 1} shape: {tensor.shape}")
             image_features = []
             for idx, image_feat in enumerate(encoded_image_features):
                 if idx in video_idx_in_batch:
@@ -471,6 +468,8 @@ class LlavaMetaForCausalLM(ABC):
             cur_new_input_embeds = []
             cur_new_labels = []
 
+            # print(f"num_images is {num_images}")
+            # print(f"image_features is {len(image_features)}")
             for i in range(num_images + 1):
                 cur_new_input_embeds.append(cur_input_embeds_no_im[i])
                 cur_new_labels.append(cur_labels_noim[i])
