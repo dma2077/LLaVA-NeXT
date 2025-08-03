@@ -1,109 +1,109 @@
 datasets:
-  - json_path: /map-vepfs/dehua/code/IV_Data/question_data/processed/all_data_converted.json
+  - json_path: /llm_reco/dehua/data/transfer_data/sample.json
     sampling_strategy: "all"
-  - json_path: /map-vepfs/dehua/code/IV_Data/question_data/processed/original_all_data_filtered.json
-    sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/dehua/code/IV_Data/question_data/processed/original_all_data_filtered.json
+  #   sampling_strategy: "first:10%"
   # - json_path: /map-vepfs/dehua/code/IV_Data/question_data/processed/all_data_converted_new.json
   #   sampling_strategy: "all"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/infographic_vqa.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/magpie_pro_l3_80b_st_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/magpie_pro_qwen2_72b_st_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/IconQA_MathV360K_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/geomverse_cauldron_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/geo170k_qa_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/hme100k.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/allava_instruct_vflan4v.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/TabMWP_MathV360K_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/mavis_math_metagen.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/iiit5k.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/infographic_gpt4v_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/magpie_pro_l3_80b_mt_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/clevr_cauldron_llava_format_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/VizWiz_MathV360K_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/lrv_normal_filtered_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/image_textualization_filtered_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/iam_cauldron_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/UniGeo_MathV360K_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/iconqa_cauldron_llava_format_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/chart2text_cauldron_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/chartqa_cauldron_llava_format_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/diagram_image_to_text_cauldron_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/infographic_vqa_llava_format.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/dvqa_cauldron_llava_format_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/PMC-VQA_MathV360K_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/mapqa_cauldron_llava_format_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/k12_printing.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/FigureQA_MathV360K_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/lrv_chart.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/aokvqa_cauldron_llava_format_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/CLEVR-Math_MathV360K_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/VisualWebInstruct_filtered_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/intergps_cauldron_llava_format_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/MapQA_MathV360K_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/geo170k_align_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/figureqa_cauldron_llava_format_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/geo3k.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/Super-CLEVR_MathV360K_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/hitab_cauldron_llava_format_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/hateful_memes_cauldron_llava_format_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/GeoQA+_MathV360K_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/GEOS_MathV360K_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/Geometry3K_MathV360K_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/ai2d_gpt4v_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/mathqa.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/chrome_writting.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/ai2d_internvl_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/ai2d_cauldron_llava_format_.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/allava_instruct_laion4v.json
-    sampling_strategy: "first:10%"
-  - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/llavar_gpt4_20k.json
-    sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/infographic_vqa.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/magpie_pro_l3_80b_st_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/magpie_pro_qwen2_72b_st_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/IconQA_MathV360K_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/geomverse_cauldron_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/geo170k_qa_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/hme100k.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/allava_instruct_vflan4v.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/TabMWP_MathV360K_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/mavis_math_metagen.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/iiit5k.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/infographic_gpt4v_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/magpie_pro_l3_80b_mt_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/clevr_cauldron_llava_format_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/VizWiz_MathV360K_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/lrv_normal_filtered_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/image_textualization_filtered_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/iam_cauldron_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/UniGeo_MathV360K_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/iconqa_cauldron_llava_format_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/chart2text_cauldron_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/chartqa_cauldron_llava_format_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/diagram_image_to_text_cauldron_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/infographic_vqa_llava_format.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/dvqa_cauldron_llava_format_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/PMC-VQA_MathV360K_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/mapqa_cauldron_llava_format_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/k12_printing.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/FigureQA_MathV360K_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/lrv_chart.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/aokvqa_cauldron_llava_format_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/CLEVR-Math_MathV360K_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/VisualWebInstruct_filtered_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/intergps_cauldron_llava_format_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/MapQA_MathV360K_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/geo170k_align_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/figureqa_cauldron_llava_format_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/geo3k.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/Super-CLEVR_MathV360K_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/hitab_cauldron_llava_format_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/hateful_memes_cauldron_llava_format_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/GeoQA+_MathV360K_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/GEOS_MathV360K_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/Geometry3K_MathV360K_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/ai2d_gpt4v_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/mathqa.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/chrome_writting.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/ai2d_internvl_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/ai2d_cauldron_llava_format_.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/allava_instruct_laion4v.json
+  #   sampling_strategy: "first:10%"
+  # - json_path: /map-vepfs/datasets/LLaVA-OneVision-Data-JSON/llavar_gpt4_20k.json
+  #   sampling_strategy: "first:10%"

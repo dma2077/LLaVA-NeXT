@@ -2,15 +2,15 @@
 
 # Set up the data folder
 IMAGE_FOLDER="/map-vepfs/datasets/LLaVA-OneVision-Data-Images"
-VIDEO_FOLDER="/map-vepfs/datasets/LLaVA-Video-178K"
-DATA_YAML="/map-vepfs/dehua/code/LLaVA-NeXT/scripts/video/train/exp_test.yaml" # e.g exp.yaml
+VIDEO_FOLDER="/llm_reco/dehua/data/LLaVA-Video-178K"
+DATA_YAML="/llm_reco/dehua/code/LLaVA-NeXT/scripts/video/train/exp_test.yaml" # e.g exp.yaml
 
 ############### Prepare Envs #################
 # python3 -m pip install flash-attn --no-build-isolation
 # alias python=python3
 ############### Show Envs ####################
 nvidia-smi
-source /map-vepfs/dehua/anaconda3/bin/activate llava-next
+source /llm_reco/dehua/anaconda3/bin/activate llava-next
 ################ Arnold Jobs ################
 
 LLM_VERSION="Qwen/Qwen2-7B-Instruct"
@@ -25,18 +25,14 @@ echo "BASE_RUN_NAME: ${BASE_RUN_NAME}"
 # Stage 2
 PROMPT_VERSION="qwen_1_5"
 MID_RUN_NAME="llavanext-${VISION_MODEL_VERSION_CLEAN}-${LLM_VERSION_CLEAN}-ov_to_video_am9"
-PREV_STAGE_CHECKPOINT="/map-vepfs/huggingface/models/lmms-lab/llava-onevision-qwen2-7b-si"
-PREV_STAGE_CHECKPOINT="/map-vepfs/huggingface/models/llava-onevision-qwen2-0.5b-si"
+PREV_STAGE_CHECKPOINT="/llm_reco/dehua/model/llava-onevision-qwen2-7b-si"
 echo "PREV_STAGE_CHECKPOINT: ${PREV_STAGE_CHECKPOINT}"
 echo "MID_RUN_NAME: ${MID_RUN_NAME}"
-
-export http_proxy=http://100.64.117.161:3128
-export https_proxy=http://100.64.117.161:3128
 # ARNOLD_WORKER_NUM=${1:-1}
 # ARNOLD_ID=${2:-0}
 # ARNOLD_WORKER_GPU=${3:-8}
 # METIS_WORKER_0_HOST=${METIS_WORKER_0_HOST:-127.0.0.1}
-
+export MASTER_ADDR=10.48.48.83
 
 export GPUS_PER_NODE=${MLP_WORKER_GPU:-${KUBERNETES_CONTAINER_RESOURCE_GPU:-8}}
 export NNODES=${MLP_WORKER_NUM:-${WORLD_SIZE:-1}}
@@ -61,7 +57,7 @@ echo "gpus per worker: ${GPUS_PER_NODE}"
 echo "master ip: ${MASTER_ADDR}"
 echo "master port: ${MASTER_PORT}"
 
-export HF_HOME=/map-vepfs/yizhi/RAG-V/jiawei_results/cache
+export HF_HOME=/llm_reco/dehua/model
 
 # ACCELERATE_CPU_AFFINITY=1 
 torchrun --nproc_per_node $GPUS_PER_NODE \
